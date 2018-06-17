@@ -1,8 +1,8 @@
 'use strict';
 
-var generateNaturalNumber = function(max, min) {
+var generateNaturalNumber = function (max, min) {
   return Math.floor(Math.random() * (max - min) + min);
-}
+};
 
 var createRandomPhoto = function (photoNumber, maxLikes, minLikes, photoComments, photoDescription) {
   var createRandomComment = function (comments) {
@@ -55,7 +55,6 @@ var createPhotoGallery = function () {
 };
 
 var photos = createPhotoGallery();
-console.log(photos);
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
 
 var drawPhoto = function (photo) {
@@ -87,7 +86,6 @@ var drawBigPhoto = function (photo) {
   bigPicture.querySelector('.big-picture__img img').src = photo.url;
   bigPicture.querySelector('.likes-count').textContent = photo.likes;
   var socialComment = bigPicture.querySelectorAll('.social__comment');
-  console.log(socialComment);
   var MAX_AVATAR_NUMBER = 6;
   var MIN_AVATAR_NUMBER = 1;
   for (var i = 0; i < socialComment.length; i++) {
@@ -104,7 +102,7 @@ var drawBigPhoto = function (photo) {
 
 var hideBlock = function (blockParent, blockClass) {
   blockParent.querySelector(blockClass).classList.add('visually-hidden');
-}
+};
 
 drawBigPhoto(photos[0]);
 hideBlock(bigPicture, '.social__comment-count');
