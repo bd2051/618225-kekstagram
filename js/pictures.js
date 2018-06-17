@@ -5,11 +5,12 @@ var createRandomPhoto = function (photoNumber, maxLikes, minLikes, photoComments
     var max = comments.length - 1;
     var min = 1;
     var randomNumber = Math.floor(Math.random() * max);
-    var comment = comments[randomNumber];
+    var comment = [];
+    comment[0] = comments[randomNumber];
     if (Math.round(Math.random())) {
       randomNumber += Math.floor(Math.random() * (max - min) + min);
-      randomNumber -= (randomNumber > max) ? comments.length  : 0;
-      return comment + ' ' + comments[randomNumber];
+      randomNumber -= (randomNumber > max) ? comments.length : 0;
+      comment[1] = comments[randomNumber];
     }
     return comment;
   };
