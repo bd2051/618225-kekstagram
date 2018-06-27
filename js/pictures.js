@@ -62,7 +62,7 @@ var drawPhoto = function (photo) {
 
   pictureElement.querySelector('.picture__img').src = photo.url;
   pictureElement.querySelector('.picture__stat--likes').textContent = photo.likes;
-  pictureElement.querySelector('.picture__stat--comments').textContent = photo.comments[0];
+  pictureElement.querySelector('.picture__stat--comments').textContent = photo.comments.length;
 
   return pictureElement;
 };
@@ -111,16 +111,27 @@ var onBigPictureCloseClick = function () {
   closeBigPhoto();
 };
 
+var ESC_KEYCODE = 27;
+
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPhoto();
+  }
+};
+
 var openBigPhoto = function (photo) {
   bigPicture.classList.remove('hidden');
   drawBigPhoto(photo);
   hideBlock(bigPicture, '.social__comment-count');
   hideBlock(bigPicture, '.social__loadmore');
   bigPictureClose.addEventListener('click', onBigPictureCloseClick);
+  document.addEventListener('keydown', onBigPictureEscPress);
 };
 
 var closeBigPhoto = function () {
   bigPicture.classList.add('hidden');
+  bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
+  document.removeEventListener('keydown', onBigPictureEscPress);
 };
 
 var addOpeningBigPhoto = function (index) {

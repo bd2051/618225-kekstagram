@@ -15,7 +15,7 @@ var drawSlider = function () {
 };
 
 var onSliderMouseUp = function () {
-  propertyLevel = 80; /*временно*/
+  propertyLevel = 80; /* временно */
   drawSlider();
   editEffectsProperty(indexNumber);
 };
@@ -29,7 +29,7 @@ var effectsProperty = [
   'brightness(0.6)'
 ];
 
-/*var ORIGINAL_INDEX = 0;*/
+/* var ORIGINAL_INDEX = 0; */
 var CHROME_INDEX = 1;
 var SEPIA_INDEX = 2;
 var MARVIN_INDEX = 3;
