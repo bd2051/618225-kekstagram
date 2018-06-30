@@ -15,7 +15,7 @@ var drawSlider = function () {
 };
 
 var onSliderMouseUp = function () {
-  propertyLevel = 80; /* временно */
+  propertyLevel = 20; /* временно */
   drawSlider();
   editEffectsProperty(indexNumber);
 };
@@ -38,7 +38,7 @@ var HEAT_INDEX = 5;
 
 var pictureFilter = editPicture.querySelector('.img-upload__preview');
 var effectsItem = editPicture.querySelectorAll('.effects__item');
-var propertyLevel = 20;
+var propertyLevel;
 var indexNumber = 0;
 
 var editEffectsProperty = function (index) {
@@ -64,7 +64,7 @@ var editEffectsProperty = function (index) {
 
 var addEffectsProperty = function (index) {
   effectsItem[index].addEventListener('click', function () {
-    propertyLevel = 20;
+    propertyLevel = 100;
     editEffectsProperty(index);
     indexNumber = index;
     drawSlider();
@@ -95,6 +95,8 @@ var openEditPopup = function () {
   for (var i = 0; i < effectsItem.length; i++) {
     addEffectsProperty(i);
   }
+  controlMinus.addEventListener('click', onControlMinusClick);
+  controlPlus.addEventListener('click', onControlPlusClick);
 };
 
 var closeEditPopup = function () {
@@ -103,4 +105,31 @@ var closeEditPopup = function () {
   document.removeEventListener('keydown', onPopupEscPress);
   editPictureClose.removeEventListener('click', onClosePopupClick);
   scalePin.removeEventListener('mouseup', onSliderMouseUp);
+  controlMinus.removeEventListener('click', onControlMinusClick);
+  controlPlus.removeEventListener('click', onControlPlusClick);
 };
+
+// Масштабируем загружаемую картинку
+
+var controlMinus = editPicture.querySelector('.resize__control--minus');
+var controlPlus = editPicture.querySelector('.resize__control--plus');
+var controlValue = editPicture.querySelector('.resize__control--value');
+var scalePicture = 100;
+
+var onControlMinusClick = function () {
+  scalePicture -= 25;
+  if (scalePicture < 25) {
+    scalePicture = 25;
+  }
+  controlValue.value = scalePicture + '%';
+  pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
+}
+
+var onControlPlusClick = function () {
+  scalePicture += 25;
+  if (scalePicture > 100) {
+    scalePicture = 100;
+  }
+  controlValue.value = scalePicture + '%';
+  pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
+}
