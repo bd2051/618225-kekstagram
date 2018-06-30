@@ -123,7 +123,7 @@ var onControlMinusClick = function () {
   }
   controlValue.value = scalePicture + '%';
   pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
-}
+};
 
 var onControlPlusClick = function () {
   scalePicture += 25;
@@ -132,4 +132,4 @@ var onControlPlusClick = function () {
   }
   controlValue.value = scalePicture + '%';
   pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
-}
+};
