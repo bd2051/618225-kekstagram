@@ -62,12 +62,13 @@ var drawPhoto = function (photo) {
 
   pictureElement.querySelector('.picture__img').src = photo.url;
   pictureElement.querySelector('.picture__stat--likes').textContent = photo.likes;
-  pictureElement.querySelector('.picture__stat--comments').textContent = photo.comments;
+  pictureElement.querySelector('.picture__stat--comments').textContent = photo.comments.length;
 
   return pictureElement;
 };
 
 var pictures = document.querySelector('.pictures');
+var picturesElement = [];
 
 var fillPhotoGallery = function (photoGallery) {
   var fragment = document.createDocumentFragment();
@@ -75,12 +76,12 @@ var fillPhotoGallery = function (photoGallery) {
     fragment.appendChild(drawPhoto(photoGallery[i]));
   }
   pictures.appendChild(fragment);
+  picturesElement = pictures.querySelectorAll('.picture__link');
 };
 
 fillPhotoGallery(photos);
 
 var bigPicture = document.querySelector('.big-picture');
-bigPicture.classList.remove('hidden');
 
 var drawBigPhoto = function (photo) {
   bigPicture.querySelector('.big-picture__img img').src = photo.url;
@@ -104,6 +105,41 @@ var hideBlock = function (blockParent, blockClass) {
   blockParent.querySelector(blockClass).classList.add('visually-hidden');
 };
 
-drawBigPhoto(photos[0]);
-hideBlock(bigPicture, '.social__comment-count');
-hideBlock(bigPicture, '.social__loadmore');
+var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+
+var onBigPictureCloseClick = function () {
+  closeBigPhoto();
+};
+
+var ESC_KEYCODE = 27;
+
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPhoto();
+  }
+};
+
+var openBigPhoto = function (photo) {
+  bigPicture.classList.remove('hidden');
+  drawBigPhoto(photo);
+  hideBlock(bigPicture, '.social__comment-count');
+  hideBlock(bigPicture, '.social__loadmore');
+  bigPictureClose.addEventListener('click', onBigPictureCloseClick);
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPhoto = function () {
+  bigPicture.classList.add('hidden');
+  bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+var addOpeningBigPhoto = function (index) {
+  picturesElement[index].addEventListener('click', function () {
+    openBigPhoto(photos[index]);
+  });
+};
+
+for (var i = 0; i < picturesElement.length; i++) {
+  addOpeningBigPhoto(i);
+}
