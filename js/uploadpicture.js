@@ -141,18 +141,22 @@ var addScaleProperty = function () {
   pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
 };
 
+var MIN_SCALE = 25;
+var MAX_SCALE = 100;
+var SCALE_STEP = 25;
+
 var onControlMinusClick = function () {
-  scalePicture -= 25;
-  if (scalePicture < 25) {
-    scalePicture = 25;
+  scalePicture -= SCALE_STEP;
+  if (scalePicture < MIN_SCALE) {
+    scalePicture = MIN_SCALE;
   }
   addScaleProperty();
 };
 
 var onControlPlusClick = function () {
-  scalePicture += 25;
-  if (scalePicture > 100) {
-    scalePicture = 100;
+  scalePicture += SCALE_STEP;
+  if (scalePicture > MAX_SCALE) {
+    scalePicture = MAX_SCALE;
   }
   addScaleProperty();
 };
