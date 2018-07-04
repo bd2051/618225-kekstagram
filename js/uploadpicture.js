@@ -126,6 +126,7 @@ var openEditPopup = function () {
   textHashtags.addEventListener('blur', onObjectBlur);
   textDescription.addEventListener('focus', onObjectFocus);
   textDescription.addEventListener('blur', onObjectBlur);
+  uploadForm.addEventListener('submit', onFormSubmit);
 };
 
 var closeEditPopup = function () {
@@ -142,6 +143,7 @@ var closeEditPopup = function () {
   controlMinus.removeEventListener('click', onControlMinusClick);
   controlPlus.removeEventListener('click', onControlPlusClick);
   textHashtags.removeEventListener('input', onHashtagsInput);
+  uploadForm.removeEventListener('submit', onFormSubmit);
 };
 
 // Масштабируем загружаемую картинку
@@ -194,13 +196,40 @@ var changeMaxLength = function (inputMassive) {
   return maxLength;
 };
 
+var convertHashtagsMassive = function (stringHashtags) {
+  stringHashtags = stringHashtags.toLowerCase();
+  var massiveHashtags = stringHashtags.split(' ');
+  massiveHashtags = massiveHashtags.filter(function (n) {
+    return n.length > 0;
+  });
+  return massiveHashtags;
+};
+
+var onFormSubmit = function (evt) {
+  hashtags = convertHashtagsMassive(textHashtags.value);
+  var repeatedHashtags = [];
+  for (var i = 0; i < hashtags.length; i++) {
+    repeatedHashtags = hashtags.filter(function (n) {
+      return n === hashtags[i];
+    });
+    if (repeatedHashtags.length > 1) {
+      textHashtags.setCustomValidity('Хэш-теги не должены повторяться');
+      textHashtags.maxLength = changeMaxLength(hashtags);
+      textHashtags.style.background = INVALID_COLOR;
+      textHashtags.style.outline = INVALID_STYLE;
+      evt.preventDefault();
+      textHashtags.reportValidity();
+    }
+  }
+};
+
 var onHashtagsInput = function () {
   textHashtags.style.background = '';
   textHashtags.style.outline = '';
   textHashtags.maxLength = MAX_LENGTH;
   textHashtags.setCustomValidity('');
 
-  hashtags = textHashtags.value.toLowerCase();
+  hashtags = textHashtags.value;
 
   if (hashtags.search(SPEСIAL_SYMBOL) !== -1) {
     textHashtags.setCustomValidity('Хэш-тег не может содержать спецсимволы');
@@ -209,12 +238,7 @@ var onHashtagsInput = function () {
     textHashtags.maxLength = changeMaxLength(hashtags);
   }
 
-  hashtags = hashtags.split(' ');
-  hashtags = hashtags.filter(function (n) {
-    return n.length > 0;
-  });
-
-  var repeatedHashtags = [];
+  hashtags = convertHashtagsMassive(hashtags);
 
   if (hashtags.length > MAX_NUMBER_HASHTAG) {
     textHashtags.setCustomValidity('Хэш-тегов не может быть больше пяти');
@@ -239,15 +263,6 @@ var onHashtagsInput = function () {
         textHashtags.style.outline = INVALID_STYLE;
       } else if (hashtags[i].length > 20) {
         textHashtags.setCustomValidity('Хэш-тег не может содержать больше двадцати символов');
-        textHashtags.maxLength = changeMaxLength(hashtags);
-        textHashtags.style.background = INVALID_COLOR;
-        textHashtags.style.outline = INVALID_STYLE;
-      }
-      repeatedHashtags = hashtags.filter(function (n) {
-        return n === hashtags[i];
-      });
-      if (repeatedHashtags.length > 1) {
-        textHashtags.setCustomValidity('Хэш-теги не должены повторяться');
         textHashtags.maxLength = changeMaxLength(hashtags);
         textHashtags.style.background = INVALID_COLOR;
         textHashtags.style.outline = INVALID_STYLE;
