@@ -94,11 +94,21 @@ var onPopupEscPress = function (evt) {
   }
 };
 
+var onObjectFocus = function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onObjectBlur = function () {
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
 // Запуск и закрытие окна редактирования
 
 uploadFile.addEventListener('change', function () {
   openEditPopup();
 });
+
+var textDescription = editPicture.querySelector('.text__description');
 
 var openEditPopup = function () {
   editPicture.classList.remove('hidden');
@@ -111,8 +121,12 @@ var openEditPopup = function () {
   }
   controlMinus.addEventListener('click', onControlMinusClick);
   controlPlus.addEventListener('click', onControlPlusClick);
+  textHashtags.addEventListener('input', onHashtagsInput);
+  textHashtags.addEventListener('focus', onObjectFocus);
+  textHashtags.addEventListener('blur', onObjectBlur);
+  textDescription.addEventListener('focus', onObjectFocus);
+  textDescription.addEventListener('blur', onObjectBlur);
 };
-
 
 var closeEditPopup = function () {
   editPicture.classList.add('hidden');
@@ -127,6 +141,7 @@ var closeEditPopup = function () {
   scalePin.removeEventListener('mouseup', onSliderMouseUp);
   controlMinus.removeEventListener('click', onControlMinusClick);
   controlPlus.removeEventListener('click', onControlPlusClick);
+  textHashtags.removeEventListener('input', onHashtagsInput);
 };
 
 // Масштабируем загружаемую картинку
@@ -159,4 +174,86 @@ var onControlPlusClick = function () {
     scalePicture = MAX_SCALE;
   }
   addScaleProperty();
+};
+
+// Проверка хэштегов
+
+var textHashtags = editPicture.querySelector('.text__hashtags');
+var hashtags;
+var INVALID_COLOR = '#FFDDDD';
+var INVALID_STYLE = '1px solid red';
+var MAX_NUMBER_HASHTAG = 5;
+var MAX_LENGTH = 105;
+var SPEСIAL_SYMBOL = '[^#0-9a-zA-Z_а-яёА-ЯЁ ]';
+
+var changeMaxLength = function (inputMassive) {
+  var maxLength = 0;
+  for (var i = 0; i < inputMassive.length; i++) {
+    maxLength += inputMassive[i].length;
+  }
+  return maxLength;
+};
+
+var onHashtagsInput = function () {
+  textHashtags.style.background = '';
+  textHashtags.style.outline = '';
+  textHashtags.maxLength = MAX_LENGTH;
+  textHashtags.setCustomValidity('');
+
+  hashtags = textHashtags.value.toLowerCase();
+
+  if (hashtags.search(SPEСIAL_SYMBOL) !== -1) {
+    textHashtags.setCustomValidity('Хэш-тег не может содержать спецсимволы');
+    textHashtags.style.background = INVALID_COLOR;
+    textHashtags.style.outline = INVALID_STYLE;
+    textHashtags.maxLength = changeMaxLength(hashtags);
+  }
+
+  hashtags = hashtags.split(' ');
+  hashtags = hashtags.filter(function (n) {
+    return n.length > 0;
+  });
+
+  var repeatedHashtags = [];
+
+  if (hashtags.length > MAX_NUMBER_HASHTAG) {
+    textHashtags.setCustomValidity('Хэш-тегов не может быть больше пяти');
+    textHashtags.style.background = INVALID_COLOR;
+    textHashtags.style.outline = INVALID_STYLE;
+    textHashtags.maxLength = changeMaxLength(hashtags);
+  } else {
+    for (var i = 0; i < hashtags.length; i++) {
+      if (hashtags[i].charAt(0) !== '#') {
+        textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа #');
+        textHashtags.maxLength = changeMaxLength(hashtags);
+        textHashtags.style.background = INVALID_COLOR;
+        textHashtags.style.outline = INVALID_STYLE;
+      } else if (hashtags[i].length === 1 && i < (hashtags.length - 1)) {
+        textHashtags.setCustomValidity('Хэш-тег не может содержать единственный символ #');
+        textHashtags.style.background = INVALID_COLOR;
+        textHashtags.style.outline = INVALID_STYLE;
+      } else if (hashtags[i].charAt(1) === '#') {
+        textHashtags.setCustomValidity('Лишний символ #');
+        textHashtags.maxLength = changeMaxLength(hashtags);
+        textHashtags.style.background = INVALID_COLOR;
+        textHashtags.style.outline = INVALID_STYLE;
+      } else if (hashtags[i].length > 20) {
+        textHashtags.setCustomValidity('Хэш-тег не может содержать больше двадцати символов');
+        textHashtags.maxLength = changeMaxLength(hashtags);
+        textHashtags.style.background = INVALID_COLOR;
+        textHashtags.style.outline = INVALID_STYLE;
+      }
+      repeatedHashtags = hashtags.filter(function (n) {
+        return n === hashtags[i];
+      });
+      if (repeatedHashtags.length > 1) {
+        textHashtags.setCustomValidity('Хэш-теги не должены повторяться');
+        textHashtags.maxLength = changeMaxLength(hashtags);
+        textHashtags.style.background = INVALID_COLOR;
+        textHashtags.style.outline = INVALID_STYLE;
+      }
+    }
+  }
+
+  textHashtags.reportValidity();
 };
