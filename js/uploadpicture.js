@@ -13,27 +13,31 @@ var scaleValue = editPicture.querySelector('.scale__value');
 var scaleLine = editPicture.querySelector('.scale__line');
 
 var drawSlider = function () {
-  scalePin.style.left = propertyLevel + '%';
-  scaleLevel.style.width = propertyLevel + '%';
-  scaleValue.value = propertyLevel;
+  var level = Math.round(propertyLevel);
+  scalePin.style.left = level + '%';
+  scaleLevel.style.width = level + '%';
+  scaleValue.value = level;
 };
 
 var onSliderMouseDown = function (evt) {
   evt.preventDefault();
   var startCoord = evt.clientX;
+  var leftSide = scaleLine.getBoundingClientRect().left;
+  var width = scaleLine.getBoundingClientRect().width;
+  var rightSide = leftSide + width;
 
   var onSliderMove = function (moveEvt) {
     moveEvt.preventDefault();
-    var shift = startCoord - moveEvt.clientX;
+    var shift = (startCoord - moveEvt.clientX) * 100 / width;
     startCoord = moveEvt.clientX;
-    if (startCoord <= scaleLine.getBoundingClientRect().left) {
+    if (startCoord < leftSide) {
       shift = 0;
       propertyLevel = 0;
-    } else if (startCoord >= scaleLine.getBoundingClientRect().left + scaleLine.getBoundingClientRect().width) {
+    } else if (startCoord > rightSide) {
       shift = 0;
       propertyLevel = 100;
     } else {
-      propertyLevel = propertyLevel - shift * 100 / scaleLine.getBoundingClientRect().width;
+      propertyLevel = propertyLevel - shift;
     }
     drawSlider();
     editEffectsProperty(indexNumber);
@@ -74,21 +78,22 @@ var propertyLevel = 100;
 var indexNumber = 0;
 
 var editEffectsProperty = function (index) {
+  var level = Math.round(propertyLevel);
   switch (index) {
     case CHROME_INDEX:
-      effectsProperty[index] = 'grayscale(' + (propertyLevel / 100) + ')';
+      effectsProperty[index] = 'grayscale(' + (level / 100) + ')';
       break;
     case SEPIA_INDEX:
-      effectsProperty[index] = 'sepia(' + (propertyLevel / 100) + ')';
+      effectsProperty[index] = 'sepia(' + (level / 100) + ')';
       break;
     case MARVIN_INDEX:
-      effectsProperty[index] = 'invert(' + propertyLevel + '%)';
+      effectsProperty[index] = 'invert(' + level + '%)';
       break;
     case FOBOS_INDEX:
-      effectsProperty[index] = 'blur(' + (3 * propertyLevel / 100) + 'px)';
+      effectsProperty[index] = 'blur(' + (3 * level / 100) + 'px)';
       break;
     case HEAT_INDEX:
-      effectsProperty[index] = 'brightness(' + (3 * propertyLevel / 100) + ')';
+      effectsProperty[index] = 'brightness(' + (3 * level / 100) + ')';
       break;
   }
   pictureFilter.style.filter = effectsProperty[index];
