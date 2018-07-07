@@ -6,11 +6,11 @@ var editPicture = uploadForm.querySelector('.img-upload__overlay');
 var editPictureClose = editPicture.querySelector('#upload-cancel');
 
 // Изменение положения слайдера
-
-var scalePin = editPicture.querySelector('.scale__pin');
-var scaleLevel = editPicture.querySelector('.scale__level');
-var scaleValue = editPicture.querySelector('.scale__value');
-var scaleLine = editPicture.querySelector('.scale__line');
+var scale = editPicture.querySelector('.img-upload__scale');
+var scaleValue = scale.querySelector('.scale__value');
+var scaleLine = scale.querySelector('.scale__line');
+var scalePin = scaleLine.querySelector('.scale__pin');
+var scaleLevel = scaleLine.querySelector('.scale__level');
 
 var drawSlider = function () {
   var level = Math.round(propertyLevel);
@@ -103,6 +103,11 @@ var addEffectsProperty = function (i) {
   propertyLevel = 100;
   editEffectsProperty(i);
   indexNumber = i;
+  if (indexNumber === ORIGINAL_INDEX) {
+    scale.classList.add('visually-hidden');
+  } else {
+    scale.classList.remove('visually-hidden');
+  }
   drawSlider();
 };
 
