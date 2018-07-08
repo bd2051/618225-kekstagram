@@ -6,22 +6,53 @@ var editPicture = uploadForm.querySelector('.img-upload__overlay');
 var editPictureClose = editPicture.querySelector('#upload-cancel');
 
 // Изменение положения слайдера
-
-var scalePin = editPicture.querySelector('.scale__pin');
-var scaleLevel = editPicture.querySelector('.scale__level');
-var scaleValue = editPicture.querySelector('.scale__value');
+var scale = editPicture.querySelector('.img-upload__scale');
+var scaleValue = scale.querySelector('.scale__value');
+var scaleLine = scale.querySelector('.scale__line');
+var scalePin = scaleLine.querySelector('.scale__pin');
+var scaleLevel = scaleLine.querySelector('.scale__level');
 
 var drawSlider = function () {
-  scalePin.style.left = propertyLevel + '%';
-  scaleLevel.style.width = propertyLevel + '%';
-  scaleValue.value = propertyLevel;
+  var level = Math.round(propertyLevel);
+  scalePin.style.left = level + '%';
+  scaleLevel.style.width = level + '%';
+  scaleValue.value = level;
 };
 
-var onSliderMouseUp = function () {
-  propertyLevel = 20; /* временно */
-  drawSlider();
-  editEffectsProperty(indexNumber);
+var onSliderMouseDown = function (evt) {
+  evt.preventDefault();
+  var startCoord = evt.clientX;
+  var leftSide = scaleLine.getBoundingClientRect().left;
+  var width = scaleLine.getBoundingClientRect().width;
+  var rightSide = leftSide + width;
+
+  var onSliderMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shift = (startCoord - moveEvt.clientX) * 100 / width;
+    startCoord = moveEvt.clientX;
+    if (startCoord < leftSide) {
+      shift = 0;
+      propertyLevel = 0;
+    } else if (startCoord > rightSide) {
+      shift = 0;
+      propertyLevel = 100;
+    } else {
+      propertyLevel = propertyLevel - shift;
+    }
+    drawSlider();
+    editEffectsProperty(indexNumber);
+  };
+
+  var onSliderMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onSliderMove);
+    document.removeEventListener('mouseup', onSliderMouseUp);
+  };
+
+  document.addEventListener('mousemove', onSliderMove);
+  document.addEventListener('mouseup', onSliderMouseUp);
 };
+
 
 // Изменение фильтра картинки
 
@@ -43,25 +74,26 @@ var HEAT_INDEX = 5;
 
 var pictureFilter = editPicture.querySelector('.img-upload__preview');
 var effectsItem = editPicture.querySelectorAll('.effects__item');
-var propertyLevel;
+var propertyLevel = 100;
 var indexNumber = 0;
 
 var editEffectsProperty = function (index) {
+  var level = Math.round(propertyLevel);
   switch (index) {
     case CHROME_INDEX:
-      effectsProperty[index] = 'grayscale(' + (propertyLevel / 100) + ')';
+      effectsProperty[index] = 'grayscale(' + (level / 100) + ')';
       break;
     case SEPIA_INDEX:
-      effectsProperty[index] = 'sepia(' + (propertyLevel / 100) + ')';
+      effectsProperty[index] = 'sepia(' + (level / 100) + ')';
       break;
     case MARVIN_INDEX:
-      effectsProperty[index] = 'invert(' + propertyLevel + '%)';
+      effectsProperty[index] = 'invert(' + level + '%)';
       break;
     case FOBOS_INDEX:
-      effectsProperty[index] = 'blur(' + (3 * propertyLevel / 100) + 'px)';
+      effectsProperty[index] = 'blur(' + (3 * level / 100) + 'px)';
       break;
     case HEAT_INDEX:
-      effectsProperty[index] = 'brightness(' + (3 * propertyLevel / 100) + ')';
+      effectsProperty[index] = 'brightness(' + (3 * level / 100) + ')';
       break;
   }
   pictureFilter.style.filter = effectsProperty[index];
@@ -71,6 +103,11 @@ var addEffectsProperty = function (i) {
   propertyLevel = 100;
   editEffectsProperty(i);
   indexNumber = i;
+  if (indexNumber === ORIGINAL_INDEX) {
+    scale.classList.add('visually-hidden');
+  } else {
+    scale.classList.remove('visually-hidden');
+  }
   drawSlider();
 };
 
@@ -115,7 +152,7 @@ var openEditPopup = function () {
 
   document.addEventListener('keydown', onPopupEscPress);
   editPictureClose.addEventListener('click', onClosePopupClick);
-  scalePin.addEventListener('mouseup', onSliderMouseUp);
+  scalePin.addEventListener('mousedown', onSliderMouseDown);
   for (var i = 0; i < effectsItem.length; i++) {
     addEffectsPropertyListener(i);
   }
@@ -139,7 +176,7 @@ var closeEditPopup = function () {
 
   document.removeEventListener('keydown', onPopupEscPress);
   editPictureClose.removeEventListener('click', onClosePopupClick);
-  scalePin.removeEventListener('mouseup', onSliderMouseUp);
+  scalePin.removeEventListener('mousedown', onSliderMouseDown);
   controlMinus.removeEventListener('click', onControlMinusClick);
   controlPlus.removeEventListener('click', onControlPlusClick);
   textHashtags.removeEventListener('input', onHashtagsInput);
