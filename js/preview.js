@@ -28,7 +28,7 @@
   };
 
   var onBigPictureEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeBigPhoto());
+    window.util.isEscEvent(evt, closeBigPhoto);
   };
 
   var openBigPhoto = function (photo) {
@@ -46,13 +46,17 @@
     document.removeEventListener('keydown', onBigPictureEscPress);
   };
 
-  var addOpeningBigPhoto = function (index) {
-    window.pictures.element[index].addEventListener('click', function () {
-      openBigPhoto(window.data.photos[index]);
+  var addOpeningBigPhoto = function (element, index, photos) {
+    element[index].addEventListener('click', function () {
+      openBigPhoto(photos[index]);
     });
   };
 
-  for (var i = 0; i < window.pictures.element.length; i++) {
-    addOpeningBigPhoto(i);
-  }
+  window.preview = {
+    onSuccessFill: function (picturesElement, photosElement) {
+      for (var i = 0; i < picturesElement.length; i++) {
+        addOpeningBigPhoto(picturesElement, i, photosElement);
+      }
+    }
+  };
 })();

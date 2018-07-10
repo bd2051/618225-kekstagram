@@ -51,7 +51,7 @@
     return photoGallery;
   };
 
-  window.data = {
+/*  window.data = {
     photos: createPhotoGallery()
-  };
+  };*/
 })();

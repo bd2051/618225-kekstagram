@@ -14,7 +14,6 @@
   };
 
   var pictures = document.querySelector('.pictures');
-  var picturesElement = [];
 
   var fillPhotoGallery = function (photoGallery) {
     var fragment = document.createDocumentFragment();
@@ -22,11 +21,9 @@
       fragment.appendChild(drawPhoto(photoGallery[i]));
     }
     pictures.appendChild(fragment);
-    picturesElement = pictures.querySelectorAll('.picture__link');
+    var picturesElement = pictures.querySelectorAll('.picture__link');
+    window.preview.onSuccessFill(picturesElement, photoGallery);
   };
 
-  fillPhotoGallery(window.data.photos);
-  window.pictures = {
-    element: picturesElement
-  };
+  window.backend.load(fillPhotoGallery, window.util.onErrorLoad);
 })();
