@@ -20,7 +20,7 @@
         cb();
       }
     },
-    onErrorLoad: function (errorMessage) {
+    createMessage: function (message) {
       var node = document.createElement('div');
       node.style =
         'z-index: 100;' +
@@ -36,7 +36,7 @@
       node.style.right = '10%';
       node.style.top = '40%';
       node.style.fontSize = '20px';
-      node.textContent = errorMessage;
+      node.textContent = message;
       var nodeButton = document.createElement('button');
       nodeButton.style =
         'display: block;' +
@@ -50,20 +50,20 @@
       document.body.insertAdjacentElement('afterbegin', node);
       node.insertAdjacentElement('beforeend', nodeButton);
 
-      var onErrorMessageEnterPress = function (evt) {
+      var onMessageEnterPress = function (evt) {
         window.util.isEnterEvent(evt, function () {
           document.body.removeChild(node);
-          document.removeEventListener('keydown', onErrorMessageEnterPress);
-          nodeButton.removeEventListener('click', onErrorMessageClick);
+          document.removeEventListener('keydown', onMessageEnterPress);
+          nodeButton.removeEventListener('click', onMessageClick);
         });
       };
-      var onErrorMessageClick = function () {
+      var onMessageClick = function () {
         document.body.removeChild(node);
-        nodeButton.removeEventListener('click', onErrorMessageClick);
-        document.removeEventListener('keydown', onErrorMessageEnterPress);
+        nodeButton.removeEventListener('click', onMessageClick);
+        document.removeEventListener('keydown', onMessageEnterPress);
       };
-      document.addEventListener('keydown', onErrorMessageEnterPress);
-      nodeButton.addEventListener('click', onErrorMessageClick);
+      document.addEventListener('keydown', onMessageEnterPress);
+      nodeButton.addEventListener('click', onMessageClick);
     }
   };
 })();

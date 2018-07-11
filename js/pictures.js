@@ -25,5 +25,5 @@
     window.preview.onSuccessFill(picturesElement, photoGallery);
   };
 
-  window.backend.load(fillPhotoGallery, window.util.onErrorLoad);
+  window.backend.load(fillPhotoGallery, window.util.createMessage);
 })();

@@ -240,6 +240,7 @@
 
   var onSucsessLoad = function () {
     closeEditPopup();
+    window.util.createMessage('Успех!');
   };
 
   var onErrorLoad = function (errorMessage) {
