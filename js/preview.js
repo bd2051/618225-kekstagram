@@ -60,6 +60,7 @@
 
   var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
 
+
   var onBigPictureCloseClick = function () {
     closeBigPhoto();
   };
@@ -68,24 +69,31 @@
     window.util.isEscEvent(evt, closeBigPhoto);
   };
 
+  var commentCount;
+  var comments;
+  var onSocialLoadMoreClick = function () {
+    drawComment(comments, commentCount, commentCount += 5);
+  };
+
   var openBigPhoto = function (photo) {
     bigPicture.classList.remove('hidden');
-    var commentCount = 5;
+    commentCount = 5;
     drawBigPhoto(photo, commentCount);
     bigPictureClose.addEventListener('click', onBigPictureCloseClick);
     document.addEventListener('keydown', onBigPictureEscPress);
     document.body.classList.add('modal-open');
-    socialLoadMore.addEventListener('click', function () {
-      drawComment(photo.comments, commentCount, commentCount += 5);
-    });
+    comments = photo.comments;
+    socialLoadMore.addEventListener('click', onSocialLoadMoreClick);
   };
 
   var closeBigPhoto = function () {
     bigPicture.classList.add('hidden');
+    commentCount = 5;
     deleteComment();
     bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
     document.removeEventListener('keydown', onBigPictureEscPress);
     document.body.classList.remove('modal-open');
+    socialLoadMore.removeEventListener('click', onSocialLoadMoreClick);
   };
 
   var addOpeningBigPhoto = function (element, index, photos) {

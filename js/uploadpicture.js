@@ -113,11 +113,44 @@
   };
 
   // Объявление функций событий (кроме событий слайдера)
+  /* var onFilterClick = [
+    function () {
+      addEffectsProperty(ORIGINAL_INDEX);
+      console.log('нажато');
+    },
+    function () {
+      addEffectsProperty(CHROME_INDEX);
+      console.log('нажато');
+    },
+    function () {
+      addEffectsProperty(SEPIA_INDEX);
+      console.log('нажато');
+    },
+    function () {
+      addEffectsProperty(MARVIN_INDEX);
+      console.log('нажато');
+    },
+    function () {
+      addEffectsProperty(FOBOS_INDEX);
+      console.log('нажато');
+    },
+    function () {
+      addEffectsProperty(HEAT_INDEX);
+      console.log('нажато');
+    }
+  ];*/
+  var onFiltersClick = [];
 
   var addEffectsPropertyListener = function (index) {
-    effectsItem[index].addEventListener('click', function () {
+    var onFilterClick = function () {
       addEffectsProperty(index);
-    });
+    };
+    effectsItem[index].addEventListener('click', onFilterClick);
+    return onFilterClick;
+  };
+
+  var deleteEffectsPropertyListener = function (index) {
+    effectsItem[index].removeEventListener('click', onFiltersClick[index]);
   };
 
   var onClosePopupClick = function () {
@@ -151,7 +184,7 @@
     editPictureClose.addEventListener('click', onClosePopupClick);
     scalePin.addEventListener('mousedown', onSliderMouseDown);
     for (var i = 0; i < effectsItem.length; i++) {
-      addEffectsPropertyListener(i);
+      onFiltersClick[i] = addEffectsPropertyListener(i);
     }
     controlMinus.addEventListener('click', onControlMinusClick);
     controlPlus.addEventListener('click', onControlPlusClick);
@@ -174,6 +207,9 @@
     document.removeEventListener('keydown', onPopupEscPress);
     editPictureClose.removeEventListener('click', onClosePopupClick);
     scalePin.removeEventListener('mousedown', onSliderMouseDown);
+    for (var i = 0; i < effectsItem.length; i++) {
+      deleteEffectsPropertyListener(i);
+    }
     controlMinus.removeEventListener('click', onControlMinusClick);
     controlPlus.removeEventListener('click', onControlPlusClick);
     textHashtags.removeEventListener('input', onHashtagsInput);
