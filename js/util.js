@@ -49,6 +49,7 @@
       nodeButton.textContent = 'OK';
       document.body.insertAdjacentElement('afterbegin', node);
       node.insertAdjacentElement('beforeend', nodeButton);
+
       var onErrorMessageEnterPress = function (evt) {
         window.util.isEnterEvent(evt, function () {
           document.body.removeChild(node);

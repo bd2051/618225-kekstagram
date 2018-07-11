@@ -13,14 +13,14 @@
         if (xhr.status === 200) {
           onLoad(xhr.response);
         } else {
-          onError('Не сохранено! Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
       xhr.addEventListener('error', function () {
-        onError('Не сохранено! Произошла ошибка соединения');
+        onError('Произошла ошибка соединения');
       });
       xhr.addEventListener('timeout', function () {
-        onError('Не сохранено! Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
       xhr.timeout = 10000; // 10s
