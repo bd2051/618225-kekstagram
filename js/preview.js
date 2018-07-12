@@ -79,9 +79,9 @@
     bigPicture.classList.remove('hidden');
     commentCount = 5;
     drawBigPhoto(photo, commentCount);
+    document.body.classList.add('modal-open');
     bigPictureClose.addEventListener('click', onBigPictureCloseClick);
     document.addEventListener('keydown', onBigPictureEscPress);
-    document.body.classList.add('modal-open');
     comments = photo.comments;
     socialLoadMore.addEventListener('click', onSocialLoadMoreClick);
   };
@@ -90,9 +90,9 @@
     bigPicture.classList.add('hidden');
     commentCount = 5;
     deleteComment();
+    document.body.classList.remove('modal-open');
     bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
     document.removeEventListener('keydown', onBigPictureEscPress);
-    document.body.classList.remove('modal-open');
     socialLoadMore.removeEventListener('click', onSocialLoadMoreClick);
   };
 

@@ -179,6 +179,7 @@
 
   var openEditPopup = function () {
     editPicture.classList.remove('hidden');
+    document.body.classList.add('modal-open');
 
     document.addEventListener('keydown', onPopupEscPress);
     editPictureClose.addEventListener('click', onClosePopupClick);
@@ -198,6 +199,7 @@
 
   var closeEditPopup = function () {
     editPicture.classList.add('hidden');
+    document.body.classList.remove('modal-open');
 
     uploadForm.reset();
     addEffectsProperty(ORIGINAL_INDEX);
@@ -248,7 +250,7 @@
     addScaleProperty();
   };
 
-  // Проверка хэштегов и отправка формы
+  // Отправка формы и проверка хэштегов
 
   var textHashtags = editPicture.querySelector('.text__hashtags');
   var hashtags;
@@ -312,6 +314,11 @@
     });
   };
 
+  var changeErrorStyle = function (inputField) {
+    inputField.style.background = INVALID_COLOR;
+    inputField.style.outline = INVALID_STYLE;
+  }
+
   var onFormSubmit = function (evt) {
     evt.preventDefault();
     hashtags = convertHashtagsMassive(textHashtags.value);
@@ -322,14 +329,12 @@
       });
       if (repeatedHashtags.length > 1) {
         textHashtags.setCustomValidity('Хэш-теги не должены повторяться');
-        textHashtags.style.background = INVALID_COLOR;
-        textHashtags.style.outline = INVALID_STYLE;
+        changeErrorStyle(textHashtags);
         evt.preventDefault();
         break;
       } else if (hashtags[i].length === 1) {
         textHashtags.setCustomValidity('Хэш-тег не может содержать единственный символ #');
-        textHashtags.style.background = INVALID_COLOR;
-        textHashtags.style.outline = INVALID_STYLE;
+        changeErrorStyle(textHashtags);
         evt.preventDefault();
         break;
       }
@@ -340,6 +345,11 @@
       document.querySelector('.img-upload__submit').blur();
     }
   };
+
+  var blockInputField = function (inputField, inputMassive) {
+    changeErrorStyle(inputField);
+    inputField.maxLength = changeMaxLength(inputMassive);
+  }
 
   var onHashtagsInput = function () {
     textHashtags.style.background = '';
@@ -360,34 +370,24 @@
 
     if (hashtags.length > MAX_NUMBER_HASHTAG) {
       textHashtags.setCustomValidity('Хэш-тегов не может быть больше пяти');
-      textHashtags.style.background = INVALID_COLOR;
-      textHashtags.style.outline = INVALID_STYLE;
-      textHashtags.maxLength = changeMaxLength(hashtags);
+      blockInputField(textHashtags, hashtags);
     } else {
       for (var i = 0; i < hashtags.length; i++) {
         if (hashtags[i].charAt(0) !== '#') {
           textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа #');
-          textHashtags.maxLength = changeMaxLength(hashtags);
-          textHashtags.style.background = INVALID_COLOR;
-          textHashtags.style.outline = INVALID_STYLE;
+          blockInputField(textHashtags, hashtags);
           break;
         } else if (hashtags[i].length === 1 && i < (hashtags.length - 1)) {
           textHashtags.setCustomValidity('Хэш-тег не может содержать единственный символ #');
-          textHashtags.maxLength = changeMaxLength(hashtags);
-          textHashtags.style.background = INVALID_COLOR;
-          textHashtags.style.outline = INVALID_STYLE;
+          blockInputField(textHashtags, hashtags);
           break;
         } else if (hashtags[i].charAt(1) === '#') {
           textHashtags.setCustomValidity('Лишний символ #');
-          textHashtags.maxLength = changeMaxLength(hashtags);
-          textHashtags.style.background = INVALID_COLOR;
-          textHashtags.style.outline = INVALID_STYLE;
+          blockInputField(textHashtags, hashtags);
           break;
         } else if (hashtags[i].length > 20) {
           textHashtags.setCustomValidity('Хэш-тег не может содержать больше двадцати символов');
-          textHashtags.maxLength = changeMaxLength(hashtags);
-          textHashtags.style.background = INVALID_COLOR;
-          textHashtags.style.outline = INVALID_STYLE;
+          blockInputField(textHashtags, hashtags);
           break;
         }
       }
