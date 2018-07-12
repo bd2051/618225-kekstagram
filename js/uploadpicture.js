@@ -54,7 +54,6 @@
     document.addEventListener('mouseup', onSliderMouseUp);
   };
 
-
   // Изменение фильтра картинки
 
   var effectsProperty = [

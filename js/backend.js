@@ -3,53 +3,44 @@
 (function () {
   var URLSave = 'https://js.dump.academy/kekstagram';
   var URLLoad = 'https://js.dump.academy/kekstagram/data';
+  var SUCSESS_CODE = 200;
+  var LOAD_TIME = 10000;
 
-  window.backend = {
-    save: function (data, onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+  var requestData = function (data, onLoad, onError, isSaveFunction) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
 
-      xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
-          onLoad(xhr.response);
-        } else {
-          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-        }
-      });
-      xhr.addEventListener('error', function () {
-        onError('Произошла ошибка соединения');
-      });
-      xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-      });
+    var errorMessage = isSaveFunction ? '' : 'Данные не загрузились! ';
+    xhr.addEventListener('load', function () {
+      if (xhr.status === SUCSESS_CODE) {
+        onLoad(xhr.response);
+      } else {
+        onError(errorMessage + 'Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+      }
+    });
+    xhr.addEventListener('error', function () {
+      onError(errorMessage + 'Произошла ошибка соединения');
+    });
+    xhr.addEventListener('timeout', function () {
+      onError(errorMessage + 'Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
 
-      xhr.timeout = 10000; // 10s
-
+    xhr.timeout = LOAD_TIME;
+    if (isSaveFunction) {
       xhr.open('POST', URLSave);
       xhr.send(data);
-    },
-    load: function (onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-
-      xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
-          onLoad(xhr.response);
-        } else {
-          onError('Данные не загрузились! Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-        }
-      });
-      xhr.addEventListener('error', function () {
-        onError('Данные не загрузились! Произошла ошибка соединения');
-      });
-      xhr.addEventListener('timeout', function () {
-        onError('Данные не загрузились! Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-      });
-
-      xhr.timeout = 10000; // 10s
-
+    } else {
       xhr.open('GET', URLLoad);
       xhr.send();
     }
+  };
+
+  window.backend = {
+    save: function (data, onLoad, onError) {
+      requestData(data, onLoad, onError, true);
+    },
+    load: function (onLoad, onError) {
+      requestData(false, onLoad, onError, false);
+    },
   };
 })();
