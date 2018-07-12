@@ -317,7 +317,7 @@
   var changeErrorStyle = function (inputField) {
     inputField.style.background = INVALID_COLOR;
     inputField.style.outline = INVALID_STYLE;
-  }
+  };
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
@@ -349,7 +349,7 @@
   var blockInputField = function (inputField, inputMassive) {
     changeErrorStyle(inputField);
     inputField.maxLength = changeMaxLength(inputMassive);
-  }
+  };
 
   var onHashtagsInput = function () {
     textHashtags.style.background = '';
