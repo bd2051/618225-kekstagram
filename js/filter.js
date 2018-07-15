@@ -5,12 +5,21 @@
   var newFilter = filter.querySelector('#filter-new');
   var discussedFilter = filter.querySelector('#filter-discussed');
   var photoGallery;
-  var onPopularFilterClick = function () {
+
+
+  var onPopularFilterClick = window.debounce(function () {
+    newFilter.classList.remove('img-filters__button--active');
+    popularFilter.classList.add('img-filters__button--active');
+    discussedFilter.classList.remove('img-filters__button--active');
     photoGallery = window.backend.sourceData.slice(0);
     window.pictures.deletePhotoGallery();
     window.pictures.fillPhotoGallery(photoGallery);
-  };
-  var onNewFilterClick = function () {
+  });
+
+  var onNewFilterClick = window.debounce(function () {
+    newFilter.classList.add('img-filters__button--active');
+    popularFilter.classList.remove('img-filters__button--active');
+    discussedFilter.classList.remove('img-filters__button--active');
     photoGallery = window.backend.sourceData.slice(0);
     var MAX_NEW_PHOTO = 10;
     var maxGalleryLength = photoGallery.length;
@@ -19,21 +28,35 @@
     }
     window.pictures.deletePhotoGallery();
     window.pictures.fillPhotoGallery(photoGallery);
-  };
-  var onDiscussedFilterClick = function () {
+  });
+
+  var onDiscussedFilterClick = window.debounce(function () {
+    newFilter.classList.remove('img-filters__button--active');
+    popularFilter.classList.remove('img-filters__button--active');
+    discussedFilter.classList.add('img-filters__button--active');
     photoGallery = window.backend.sourceData.slice(0);
     photoGallery.sort(function (firstObject, secondObject) {
       return secondObject.comments.length - firstObject.comments.length;
     });
     window.pictures.deletePhotoGallery();
     window.pictures.fillPhotoGallery(photoGallery);
-  };
+  });
+
   window.filter = {
     onSuccessFill: function () {
       filter.classList.remove('img-filters--inactive');
       popularFilter.addEventListener('click', onPopularFilterClick);
+      popularFilter.addEventListener('keydown', function (evt) {
+        window.util.isEnterEvent(evt, onPopularFilterClick);
+      });
       newFilter.addEventListener('click', onNewFilterClick);
+      newFilter.addEventListener('keydown', function (evt) {
+        window.util.isEnterEvent(evt, onNewFilterClick);
+      });
       discussedFilter.addEventListener('click', onDiscussedFilterClick);
+      discussedFilter.addEventListener('keydown', function (evt) {
+        window.util.isEnterEvent(evt, onDiscussedFilterClick);
+      });
     }
   };
 })();
