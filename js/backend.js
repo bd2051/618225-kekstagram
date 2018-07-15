@@ -14,6 +14,9 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === SUCSESS_CODE) {
         onLoad(xhr.response);
+        window.backend = {
+          sourceData: xhr.response
+        };
       } else {
         onError(errorMessage + 'Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }

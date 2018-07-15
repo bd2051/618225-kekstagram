@@ -14,16 +14,25 @@
   };
 
   var pictures = document.querySelector('.pictures');
+  var picturesElement;
 
-  var fillPhotoGallery = function (photoGallery) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < photoGallery.length; i++) {
-      fragment.appendChild(drawPhoto(photoGallery[i]));
+  window.pictures = {
+    fillPhotoGallery: function (photoGallery) {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < photoGallery.length; i++) {
+        fragment.appendChild(drawPhoto(photoGallery[i]));
+      }
+      pictures.appendChild(fragment);
+      picturesElement = pictures.querySelectorAll('.picture__link');
+      window.preview.onSuccessFill(picturesElement, photoGallery);
+      window.filter.onSuccessFill();
+    },
+    deletePhotoGallery: function () {
+      picturesElement.forEach(function (element) {
+        element.remove();
+      });
     }
-    pictures.appendChild(fragment);
-    var picturesElement = pictures.querySelectorAll('.picture__link');
-    window.preview.onSuccessFill(picturesElement, photoGallery);
   };
 
-  window.backend.load(fillPhotoGallery, window.util.createMessage);
+  window.backend.load(window.pictures.fillPhotoGallery, window.util.createMessage);
 })();
