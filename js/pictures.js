@@ -25,7 +25,9 @@
       pictures.appendChild(fragment);
       picturesElement = pictures.querySelectorAll('.picture__link');
       window.preview.onSuccessFill(picturesElement, photoGallery);
-      window.filter.onSuccessFill();
+      if (!window.filter.isFilterRun) {
+        window.filter.onSuccessFill(photoGallery);
+      }
     },
     deletePhotoGallery: function () {
       picturesElement.forEach(function (element) {
