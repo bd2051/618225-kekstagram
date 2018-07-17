@@ -3,13 +3,25 @@
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
+  var node = document.createElement('div');
+  var nodeButton = document.createElement('button');
+
+  var onMessageEnterPress = function (evt) {
+    window.util.isEnterEvent(evt, function () {
+      document.body.removeChild(node);
+      document.removeEventListener('keydown', onMessageEnterPress);
+      nodeButton.removeEventListener('click', onMessageClick);
+    });
+  };
+  var onMessageClick = function () {
+    document.body.removeChild(node);
+    nodeButton.removeEventListener('click', onMessageClick);
+    document.removeEventListener('keydown', onMessageEnterPress);
+  };
 
   window.util = {
     generateNaturalNumber: function (max, min) {
       return Math.floor(Math.random() * (max - min) + min);
-    },
-    hideBlock: function (blockParent, blockClass) {
-      blockParent.querySelector(blockClass).classList.add('visually-hidden');
     },
     isEscEvent: function (evt, cb) {
       if (evt.keyCode === ESC_KEYCODE) {
@@ -22,10 +34,7 @@
       }
     },
     createMessage: function (message) {
-      var node = document.createElement('div');
-      node.style =
-        'z-index: 100;' +
-        'margin: 0 auto;' +
+      node.style = 'z-index: 100; margin: 0 auto;' +
         'padding: 10px;' +
         'text-align: center;' +
         'background-color: #232321;' +
@@ -38,7 +47,6 @@
       node.style.top = '40%';
       node.style.fontSize = '20px';
       node.textContent = message;
-      var nodeButton = document.createElement('button');
       nodeButton.style =
         'display: block;' +
         'margin: 10px auto;' +
@@ -50,19 +58,6 @@
       nodeButton.textContent = 'OK';
       document.body.insertAdjacentElement('afterbegin', node);
       node.insertAdjacentElement('beforeend', nodeButton);
-
-      var onMessageEnterPress = function (evt) {
-        window.util.isEnterEvent(evt, function () {
-          document.body.removeChild(node);
-          document.removeEventListener('keydown', onMessageEnterPress);
-          nodeButton.removeEventListener('click', onMessageClick);
-        });
-      };
-      var onMessageClick = function () {
-        document.body.removeChild(node);
-        nodeButton.removeEventListener('click', onMessageClick);
-        document.removeEventListener('keydown', onMessageEnterPress);
-      };
       document.addEventListener('keydown', onMessageEnterPress);
       nodeButton.addEventListener('click', onMessageClick);
     }
