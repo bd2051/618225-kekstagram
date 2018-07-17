@@ -1,10 +1,10 @@
 'use strict';
 
 (function () {
-  var URLSave = 'https://js.dump.academy/kekstagram';
-  var URLLoad = 'https://js.dump.academy/kekstagram/data';
   var SUCSESS_CODE = 200;
   var LOAD_TIME = 10000;
+  var URLSave = 'https://js.dump.academy/kekstagram';
+  var URLLoad = 'https://js.dump.academy/kekstagram/data';
 
   var requestData = function (data, onLoad, onError, isSaveFunction) {
     var xhr = new XMLHttpRequest();

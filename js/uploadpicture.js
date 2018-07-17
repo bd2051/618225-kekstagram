@@ -1,6 +1,20 @@
 'use strict';
 
 (function () {
+  var ORIGINAL_INDEX = 0;
+  var CHROME_INDEX = 1;
+  var SEPIA_INDEX = 2;
+  var MARVIN_INDEX = 3;
+  var FOBOS_INDEX = 4;
+  var HEAT_INDEX = 5;
+  var MIN_SCALE = 25;
+  var MAX_SCALE = 100;
+  var SCALE_STEP = 25;
+  var INVALID_COLOR = '#FFDDDD';
+  var INVALID_STYLE = '1px solid red';
+  var MAX_NUMBER_HASHTAG = 5;
+  var SPEСIAL_SYMBOL = '[^#0-9a-zA-Z_а-яёА-ЯЁ ]';
+
   var uploadForm = document.querySelector('.img-upload__form');
   var uploadFile = uploadForm.querySelector('#upload-file');
   var editPicture = uploadForm.querySelector('.img-upload__overlay');
@@ -65,13 +79,6 @@
     'brightness(0.6)'
   ];
 
-  var ORIGINAL_INDEX = 0;
-  var CHROME_INDEX = 1;
-  var SEPIA_INDEX = 2;
-  var MARVIN_INDEX = 3;
-  var FOBOS_INDEX = 4;
-  var HEAT_INDEX = 5;
-
   var pictureFilter = editPicture.querySelector('.img-upload__preview');
   var effectsItem = editPicture.querySelectorAll('.effects__item');
   var propertyLevel = 100;
@@ -122,10 +129,6 @@
     controlValue.value = scalePicture + '%';
     pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
   };
-
-  var MIN_SCALE = 25;
-  var MAX_SCALE = 100;
-  var SCALE_STEP = 25;
 
   var onControlMinusClick = function () {
     scalePicture -= SCALE_STEP;
@@ -228,10 +231,6 @@
 
   var textHashtags = editPicture.querySelector('.text__hashtags');
   var hashtags;
-  var INVALID_COLOR = '#FFDDDD';
-  var INVALID_STYLE = '1px solid red';
-  var MAX_NUMBER_HASHTAG = 5;
-  var SPEСIAL_SYMBOL = '[^#0-9a-zA-Z_а-яёА-ЯЁ ]';
 
   var changeErrorStyle = function (inputField) {
     inputField.style.background = INVALID_COLOR;
