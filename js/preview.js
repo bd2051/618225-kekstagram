@@ -1,13 +1,15 @@
 'use strict';
 
 (function () {
+  var MAX_AVATAR_NUMBER = 6;
+  var MIN_AVATAR_NUMBER = 1;
+  var BEGIN_COUNT = 0;
   var bigPicture = document.querySelector('.big-picture');
   var socialLoadMore = bigPicture.querySelector('.social__loadmore');
 
   var drawBigPhoto = function (photo, commentCount) {
     bigPicture.querySelector('.big-picture__img img').src = photo.url;
     bigPicture.querySelector('.likes-count').textContent = photo.likes;
-    var BEGIN_COUNT = 0;
     drawComment(photo.comments, BEGIN_COUNT, commentCount);
     bigPicture.querySelector('.social__caption').textContent = photo.description;
   };
@@ -27,8 +29,6 @@
   var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
 
   var printComment = function (comment) {
-    var MAX_AVATAR_NUMBER = 6;
-    var MIN_AVATAR_NUMBER = 1;
     var commentElement = commentTemplate.cloneNode(true);
 
     var avatarSource = 'img/avatar-' + window.util.generateNaturalNumber(MAX_AVATAR_NUMBER, MIN_AVATAR_NUMBER) + '.svg';

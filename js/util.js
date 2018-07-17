@@ -3,6 +3,7 @@
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
+
   window.util = {
     generateNaturalNumber: function (max, min) {
       return Math.floor(Math.random() * (max - min) + min);
