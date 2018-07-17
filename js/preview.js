@@ -32,13 +32,13 @@
   };
 
   var printComment = function (comment) {
-    var commentElement = commentTemplate.cloneNode(true);
+    var block = commentTemplate.cloneNode(true);
 
     var avatarSource = 'img/avatar-' + window.util.generateNaturalNumber(MAX_AVATAR_NUMBER, MIN_AVATAR_NUMBER) + '.svg';
-    commentElement.querySelector('.social__picture').src = avatarSource;
-    commentElement.querySelector('.social__text').textContent = comment;
+    block.querySelector('.social__picture').src = avatarSource;
+    block.querySelector('.social__text').textContent = comment;
 
-    return commentElement;
+    return block;
   };
 
   var fillCommentList = function (comments, countBegin, countEnd) {
