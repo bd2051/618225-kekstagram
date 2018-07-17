@@ -93,16 +93,16 @@
     socialLoadMore.removeEventListener('click', onSocialLoadMoreClick);
   };
 
-  var addOpeningBigPhoto = function (element, index, photos) {
-    element[index].addEventListener('click', function () {
+  var addOpeningBigPhoto = function (blocks, index, photos) {
+    blocks[index].addEventListener('click', function () {
       openBigPhoto(photos[index]);
     });
   };
 
   window.preview = {
-    onSuccessFill: function (picturesElement, photosElement) {
-      for (var i = 0; i < picturesElement.length; i++) {
-        addOpeningBigPhoto(picturesElement, i, photosElement);
+    onSuccessFill: function (blocks, photos) {
+      for (var i = 0; i < blocks.length; i++) {
+        addOpeningBigPhoto(blocks, i, photos);
       }
     }
   };
