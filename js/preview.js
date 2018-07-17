@@ -4,6 +4,9 @@
   var MAX_AVATAR_NUMBER = 6;
   var MIN_AVATAR_NUMBER = 1;
   var BEGIN_COUNT = 0;
+  var INITIAL_COMMENT_NUMBER = 5;
+  var ADDITIONAL_COMMENT_NUMBER = 5;
+
   var bigPicture = document.querySelector('.big-picture');
   var socialLoadMore = bigPicture.querySelector('.social__loadmore');
   var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
@@ -54,10 +57,10 @@
   };
 
   var deleteComment = function () {
-    var comment = commentList.querySelectorAll('.social__comment');
-    for (var i = 0; i < comment.length; i++) {
-      commentList.removeChild(comment[i]);
-    }
+    var comments = commentList.querySelectorAll('.social__comment');
+    comments.forEach(function (element) {
+      commentList.removeChild(element);
+    });
   };
 
   var onBigPictureCloseClick = function () {
@@ -69,12 +72,12 @@
   };
 
   var onSocialLoadMoreClick = function () {
-    drawComment(loadingComments, commentCount, commentCount += 5);
+    drawComment(loadingComments, commentCount, commentCount += ADDITIONAL_COMMENT_NUMBER);
   };
 
   var openBigPhoto = function (photo) {
     bigPicture.classList.remove('hidden');
-    commentCount = 5;
+    commentCount = INITIAL_COMMENT_NUMBER;
     drawBigPhoto(photo, commentCount);
     document.body.classList.add('modal-open');
     bigPictureClose.addEventListener('click', onBigPictureCloseClick);
@@ -85,7 +88,7 @@
 
   var closeBigPhoto = function () {
     bigPicture.classList.add('hidden');
-    commentCount = 5;
+    commentCount = INITIAL_COMMENT_NUMBER;
     deleteComment();
     document.body.classList.remove('modal-open');
     bigPictureClose.removeEventListener('click', onBigPictureCloseClick);
@@ -93,17 +96,17 @@
     socialLoadMore.removeEventListener('click', onSocialLoadMoreClick);
   };
 
-  var addOpeningBigPhoto = function (blocks, index, photos) {
-    blocks[index].addEventListener('click', function () {
+  var addOpeningBigPhoto = function (block, photos, index) {
+    block.addEventListener('click', function () {
       openBigPhoto(photos[index]);
     });
   };
 
   window.preview = {
     onSuccessFill: function (blocks, photos) {
-      for (var i = 0; i < blocks.length; i++) {
-        addOpeningBigPhoto(blocks, i, photos);
-      }
+      blocks.forEach(function (element, index) {
+        addOpeningBigPhoto(element, photos, index);
+      });
     }
   };
 })();
