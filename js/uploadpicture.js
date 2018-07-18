@@ -85,7 +85,7 @@
   ];
 
   var pictureFilter = editPicture.querySelector('.img-upload__preview');
-  var effectsItem = editPicture.querySelectorAll('.effects__item');
+  var effectsItems = editPicture.querySelectorAll('.effects__item');
   var indexNumber = 0;
 
   var editEffectsProperty = function (index) {
@@ -158,12 +158,12 @@
     var onFilterClick = function () {
       addEffectsProperty(index);
     };
-    effectsItem[index].addEventListener('click', onFilterClick);
+    effectsItems[index].addEventListener('click', onFilterClick);
     return onFilterClick;
   };
 
   var deleteEffectsPropertyListener = function (index) {
-    effectsItem[index].removeEventListener('click', onFiltersClick[index]);
+    effectsItems[index].removeEventListener('click', onFiltersClick[index]);
   };
 
   var onClosePopupClick = function () {
@@ -197,9 +197,9 @@
     document.addEventListener('keydown', onPopupEscPress);
     editPictureClose.addEventListener('click', onClosePopupClick);
     scalePin.addEventListener('mousedown', onSliderMouseDown);
-    for (var i = 0; i < effectsItem.length; i++) {
-      onFiltersClick[i] = addEffectsPropertyListener(i);
-    }
+    effectsItems.forEach(function (element, index) {
+      onFiltersClick[index] = addEffectsPropertyListener(index);
+    });
     controlMinus.addEventListener('click', onControlMinusClick);
     controlPlus.addEventListener('click', onControlPlusClick);
     textHashtags.addEventListener('input', onHashtagsInput);
@@ -222,9 +222,9 @@
     document.removeEventListener('keydown', onPopupEscPress);
     editPictureClose.removeEventListener('click', onClosePopupClick);
     scalePin.removeEventListener('mousedown', onSliderMouseDown);
-    for (var i = 0; i < effectsItem.length; i++) {
-      deleteEffectsPropertyListener(i);
-    }
+    effectsItems.forEach(function (element, index) {
+      deleteEffectsPropertyListener(index);
+    });
     controlMinus.removeEventListener('click', onControlMinusClick);
     controlPlus.removeEventListener('click', onControlPlusClick);
     textHashtags.removeEventListener('input', onHashtagsInput);
@@ -248,9 +248,9 @@
 
   var changeMaxLength = function (inputMassive) {
     var maxLength = 0;
-    for (var i = 0; i < inputMassive.length; i++) {
-      maxLength += inputMassive[i].length;
-    }
+    inputMassive.forEach(function (element) {
+      maxLength += element.length;
+    });
     return maxLength;
   };
 
