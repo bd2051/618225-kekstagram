@@ -24,9 +24,7 @@
 
   var drawComment = function (comments, countBegin, countEnd) {
     var count = fillCommentList(comments, countBegin, countEnd);
-    var text = bigPicture.querySelector('.social__comment-count').innerHTML;
-    bigPicture.querySelector('.social__comment-count').innerHTML = text.replace(/\d+/, count);
-    bigPicture.querySelector('.comments-count').textContent = comments.length;
+    bigPicture.querySelector('.social__comment-count').textContent = count + ' из ' + comments.length + ' комментариев';
     if (count === comments.length) {
       socialLoadMore.classList.add('visually-hidden');
     } else {
