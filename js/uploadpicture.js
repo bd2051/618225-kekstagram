@@ -14,13 +14,18 @@
   var INVALID_STYLE = '1px solid red';
   var MAX_NUMBER_HASHTAG = 5;
   var SPEСIAL_SYMBOL = '[^#0-9a-zA-Z_а-яёА-ЯЁ ]';
+  var MIN_PROPERTY_LEVEL = 0;
+  var MAX_PROPERTY_LEVEL = 100;
+  var PERSENT = 100;
 
   var uploadForm = document.querySelector('.img-upload__form');
   var uploadFile = uploadForm.querySelector('#upload-file');
   var editPicture = uploadForm.querySelector('.img-upload__overlay');
   var editPictureClose = editPicture.querySelector('#upload-cancel');
+  var propertyLevel = MAX_PROPERTY_LEVEL;
 
   // Изменение положения слайдера
+
   var scale = editPicture.querySelector('.img-upload__scale');
   var scaleValue = scale.querySelector('.scale__value');
   var scaleLine = scale.querySelector('.scale__line');
@@ -43,14 +48,14 @@
 
     var onSliderMove = function (moveEvt) {
       moveEvt.preventDefault();
-      var shift = (startCoord - moveEvt.clientX) * 100 / width;
+      var shift = (startCoord - moveEvt.clientX) * PERSENT / width;
       startCoord = moveEvt.clientX;
       if (startCoord < leftSide) {
         shift = 0;
-        propertyLevel = 0;
+        propertyLevel = MIN_PROPERTY_LEVEL;
       } else if (startCoord > rightSide) {
         shift = 0;
-        propertyLevel = 100;
+        propertyLevel = MAX_PROPERTY_LEVEL;
       } else {
         propertyLevel = propertyLevel - shift;
       }
@@ -70,7 +75,7 @@
 
   // Изменение фильтра картинки
 
-  var effectsProperty = [
+  var effects = [
     'none',
     'grayscale(0.2)',
     'sepia(0.2)',
@@ -80,34 +85,33 @@
   ];
 
   var pictureFilter = editPicture.querySelector('.img-upload__preview');
-  var effectsItem = editPicture.querySelectorAll('.effects__item');
-  var propertyLevel = 100;
+  var effectsItems = editPicture.querySelectorAll('.effects__item');
   var indexNumber = 0;
 
   var editEffectsProperty = function (index) {
     var level = Math.round(propertyLevel);
     switch (index) {
       case CHROME_INDEX:
-        effectsProperty[index] = 'grayscale(' + (level / 100) + ')';
+        effects[index] = 'grayscale(' + (level / PERSENT) + ')';
         break;
       case SEPIA_INDEX:
-        effectsProperty[index] = 'sepia(' + (level / 100) + ')';
+        effects[index] = 'sepia(' + (level / PERSENT) + ')';
         break;
       case MARVIN_INDEX:
-        effectsProperty[index] = 'invert(' + level + '%)';
+        effects[index] = 'invert(' + level + '%)';
         break;
       case FOBOS_INDEX:
-        effectsProperty[index] = 'blur(' + (3 * level / 100) + 'px)';
+        effects[index] = 'blur(' + (3 * level / PERSENT) + 'px)';
         break;
       case HEAT_INDEX:
-        effectsProperty[index] = 'brightness(' + (3 * level / 100) + ')';
+        effects[index] = 'brightness(' + (3 * level / PERSENT) + ')';
         break;
     }
-    pictureFilter.style.filter = effectsProperty[index];
+    pictureFilter.style.filter = effects[index];
   };
 
   var addEffectsProperty = function (i) {
-    propertyLevel = 100;
+    propertyLevel = MAX_PROPERTY_LEVEL;
     editEffectsProperty(i);
     indexNumber = i;
     if (indexNumber === ORIGINAL_INDEX) {
@@ -123,11 +127,11 @@
   var controlMinus = editPicture.querySelector('.resize__control--minus');
   var controlPlus = editPicture.querySelector('.resize__control--plus');
   var controlValue = editPicture.querySelector('.resize__control--value');
-  var scalePicture = 100;
+  var scalePicture = MAX_SCALE;
 
   var addScaleProperty = function () {
     controlValue.value = scalePicture + '%';
-    pictureFilter.style.transform = 'scale(' + scalePicture / 100 + ')';
+    pictureFilter.style.transform = 'scale(' + scalePicture / PERSENT + ')';
   };
 
   var onControlMinusClick = function () {
@@ -154,12 +158,12 @@
     var onFilterClick = function () {
       addEffectsProperty(index);
     };
-    effectsItem[index].addEventListener('click', onFilterClick);
+    effectsItems[index].addEventListener('click', onFilterClick);
     return onFilterClick;
   };
 
   var deleteEffectsPropertyListener = function (index) {
-    effectsItem[index].removeEventListener('click', onFiltersClick[index]);
+    effectsItems[index].removeEventListener('click', onFiltersClick[index]);
   };
 
   var onClosePopupClick = function () {
@@ -193,9 +197,9 @@
     document.addEventListener('keydown', onPopupEscPress);
     editPictureClose.addEventListener('click', onClosePopupClick);
     scalePin.addEventListener('mousedown', onSliderMouseDown);
-    for (var i = 0; i < effectsItem.length; i++) {
-      onFiltersClick[i] = addEffectsPropertyListener(i);
-    }
+    effectsItems.forEach(function (element, index) {
+      onFiltersClick[index] = addEffectsPropertyListener(index);
+    });
     controlMinus.addEventListener('click', onControlMinusClick);
     controlPlus.addEventListener('click', onControlPlusClick);
     textHashtags.addEventListener('input', onHashtagsInput);
@@ -212,15 +216,15 @@
 
     uploadForm.reset();
     addEffectsProperty(ORIGINAL_INDEX);
-    scalePicture = 100;
+    scalePicture = MAX_SCALE;
     addScaleProperty();
 
     document.removeEventListener('keydown', onPopupEscPress);
     editPictureClose.removeEventListener('click', onClosePopupClick);
     scalePin.removeEventListener('mousedown', onSliderMouseDown);
-    for (var i = 0; i < effectsItem.length; i++) {
-      deleteEffectsPropertyListener(i);
-    }
+    effectsItems.forEach(function (element, index) {
+      deleteEffectsPropertyListener(index);
+    });
     controlMinus.removeEventListener('click', onControlMinusClick);
     controlPlus.removeEventListener('click', onControlPlusClick);
     textHashtags.removeEventListener('input', onHashtagsInput);
@@ -244,9 +248,9 @@
 
   var changeMaxLength = function (inputMassive) {
     var maxLength = 0;
-    for (var i = 0; i < inputMassive.length; i++) {
-      maxLength += inputMassive[i].length;
-    }
+    inputMassive.forEach(function (element) {
+      maxLength += element.length;
+    });
     return maxLength;
   };
 
