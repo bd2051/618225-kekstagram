@@ -273,7 +273,9 @@
 
     if (hashtags.search(SPEСIAL_SYMBOL) !== -1) {
       textHashtags.setCustomValidity('Хэш-тег не может содержать спецсимволы');
-      blockInputField(textHashtags, hashtags);
+      var arr = [];
+      arr[0] = hashtags;
+      blockInputField(textHashtags, arr);
     }
 
     hashtags = convertHashtagsMassive(hashtags);
@@ -291,7 +293,7 @@
           textHashtags.setCustomValidity('Хэш-тег не может содержать единственный символ #');
           blockInputField(textHashtags, hashtags);
           break;
-        } else if (hashtags[i].charAt(1) === '#') {
+        } else if (hashtags[i].match(/(?:#)(?:.*)(#)/)) {
           textHashtags.setCustomValidity('Лишний символ #');
           blockInputField(textHashtags, hashtags);
           break;
