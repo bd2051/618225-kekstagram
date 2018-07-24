@@ -10,6 +10,7 @@
   var MIN_SCALE = 25;
   var MAX_SCALE = 100;
   var SCALE_STEP = 25;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var INVALID_COLOR = '#FFDDDD';
   var INVALID_STYLE = '1px solid red';
   var MAX_NUMBER_HASHTAG = 5;
@@ -184,7 +185,29 @@
 
   // Запуск и закрытие окна редактирования
 
+  var imageSource = pictureFilter.querySelector('img');
+  var effectsPreview = editPicture.querySelectorAll('.effects__preview');
+
   uploadFile.addEventListener('change', function () {
+    var file = uploadFile.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        imageSource.src = reader.result;
+        effectsPreview.forEach(function (element) {
+          element.style.backgroundImage = 'url(' + reader.result + ')';
+        });
+      });
+
+      reader.readAsDataURL(file);
+    }
     openEditPopup();
   });
 
@@ -218,6 +241,10 @@
     addEffectsProperty(ORIGINAL_INDEX);
     scalePicture = MAX_SCALE;
     addScaleProperty();
+    imageSource.src = 'img/upload-default-image.jpg';
+    effectsPreview.forEach(function (element) {
+      element.style.backgroundImage = 'url(img/upload-default-image.jpg)';
+    });
 
     document.removeEventListener('keydown', onPopupEscPress);
     editPictureClose.removeEventListener('click', onClosePopupClick);
